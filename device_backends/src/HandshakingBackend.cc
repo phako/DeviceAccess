@@ -28,7 +28,7 @@ namespace ChimeraTK{
       throw(DeviceBackendException("Wrong number of parameters in HandshakingBackend URI", DeviceBackendException::EX_WRONG_PARAMETER));
     }
 
-    // fill list into container for better handling
+    // fill list into vector for better handling
     std::vector<std::string> parameterVec;
     for (auto & s : parameters){
       parameterVec.push_back(s);
