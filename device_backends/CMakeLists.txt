@@ -14,6 +14,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/src/RebotProtocol0.cc
    ${CMAKE_CURRENT_SOURCE_DIR}/src/RebotProtocol1.cc
    ${CMAKE_CURRENT_SOURCE_DIR}/src/testableRebotSleep.cc
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/HandshakingBackend.cc
    PARENT_SCOPE
 )
 
@@ -38,5 +39,6 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/include/pcieuni_io_compat.h
    ${CMAKE_CURRENT_SOURCE_DIR}/include/RebotBackend.h
    ${CMAKE_CURRENT_SOURCE_DIR}/include/RebotBackendException.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/include/HandshakingBackend.h
    PARENT_SCOPE
 )
