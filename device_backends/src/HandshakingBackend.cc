@@ -1,6 +1,7 @@
 #include "HandshakingBackend.h"
 //#include "HandshakingBackendAccessor.h"
 #include "BackendFactory.h"
+#include "DeviceAccessVersion.h"
 
 namespace ChimeraTK{
 
@@ -43,6 +44,12 @@ namespace ChimeraTK{
     // FIXME: just a make it compile implementation
     return _parentBackend->getRegisterAccessor<UserType>(registerPathName, numberOfWords, wordOffsetInRegister, flags);
   }
-  
-  
+
+  struct HandshakingBackendRegisterer{
+    HandshakingBackendRegisterer(){
+      BackendFactory::getInstance().registerBackendType("handshaking","",&HandshakingBackend::createInstance, CHIMERATK_DEVICEACCESS_VERSION);
+    }
+  };
+
+  HandshakingBackendRegisterer theRegisterer;
 }//namespace ChimeraTK
