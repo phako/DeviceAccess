@@ -13,8 +13,10 @@ namespace ChimeraTK{
   void HandshakingBackend::open(){
     _parentBackend =  BackendFactory::getInstance().createBackend(_parentBackendAlias);
 
-    //FIXME: fill the catalogue
-
+    auto parentCatalogue = _parentBackend->getRegisterCatalogue();
+    _catalogue = RegisterCatalogue(); // empty the catalogue by replacing with a new one
+    _catalogue.addRegister( parentCatalogue.getRegister(_payloadRegisterName) );
+    
     _opened=true;
   }
 

@@ -14,6 +14,9 @@ namespace ChimeraTK{
    *
    *  URI syntax:
    *  sdm://./handshaking=ALIAS,PAYLOAD_REGISTER,HANDSHAKE_REGISTER
+   *
+   *  Unfortunately this only works with the parent device being an alias in a dmap file
+   *  as nested URIs are not supported (yet?).
    */
   class HandshakingBackend : public DeviceBackendImpl {
 
