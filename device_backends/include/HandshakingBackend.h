@@ -67,7 +67,7 @@ namespace ChimeraTK{
       std::mutex _mutex;
       
       template<typename T>
-      friend class HandshakingAccessor;
+      friend class HandshakingBackendRegisterAccessor;
   };
 
 }

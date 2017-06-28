@@ -1,5 +1,5 @@
 #include "HandshakingBackend.h"
-//#include "HandshakingBackendAccessor.h"
+#include "HandshakingBackendRegisterAccessor.h"
 #include "BackendFactory.h"
 #include "DeviceAccessVersion.h"
 
@@ -43,8 +43,12 @@ namespace ChimeraTK{
   template<typename UserType>
   boost::shared_ptr< NDRegisterAccessor<UserType> > HandshakingBackend::getRegisterAccessor_impl(
       const RegisterPath &registerPathName, size_t numberOfWords, size_t wordOffsetInRegister, AccessModeFlags flags) {
-    // FIXME: just a make it compile implementation
-    return _parentBackend->getRegisterAccessor<UserType>(registerPathName, numberOfWords, wordOffsetInRegister, flags);
+    if (registerPathName != _payloadRegisterName){
+      throw(DeviceBackendException("Unknown register path " + registerPathName, DeviceBackendException::EX_WRONG_PARAMETER));
+    }
+
+    return boost::shared_ptr< NDRegisterAccessor<UserType> >(
+      new HandshakingBackendRegisterAccessor<UserType>(boost::dynamic_pointer_cast<HandshakingBackend>(shared_from_this()), _payloadRegisterName, numberOfWords, wordOffsetInRegister, flags, _handshakeRegisterName));
   }
 
   struct HandshakingBackendRegisterer{
