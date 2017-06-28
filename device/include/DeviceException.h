@@ -51,6 +51,10 @@ namespace mtca4u{
          */
         NOT_AVAILABLE,
 
+        /** An I/O error hass occured when communicating with the hardware.
+         */
+        I_O_ERROR,
+
         /** Deprecated, for compatibility with MultiplexedDataAccessorException (mapfile contains error) */
         EMPTY_AREA = CANNOT_OPEN_MAP_FILE,
 
