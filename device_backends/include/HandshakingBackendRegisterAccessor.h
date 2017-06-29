@@ -87,7 +87,7 @@ namespace ChimeraTK{
       }
       
       postWrite();
-      return true;
+      return false;
     }
 
 
