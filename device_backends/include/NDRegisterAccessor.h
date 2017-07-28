@@ -8,6 +8,8 @@
 #ifndef MTCA4U_N_D_REGISTER_ACCESSOR_H
 #define MTCA4U_N_D_REGISTER_ACCESSOR_H
 
+#include <boost/make_shared.hpp>
+
 #include "ForwardDeclarations.h"
 #include "TransferElement.h"
 #include "FixedPointConverter.h"
@@ -78,9 +80,15 @@ namespace mtca4u {
         if(hasActiveFuture) return activeFuture;  // the last future given out by this fuction is still active
         
         // create promise future pair and launch doReadTransfer in separate thread
-        readAsyncPromise = boost::promise<void>();
+        readAsyncPromise = TransferFuture::PromiseType();
         auto boostFuture = readAsyncPromise.get_future().share();
-        readAsyncThread = boost::thread( [this] { doReadTransfer(); readAsyncPromise.set_value(); } );
+        readAsyncThread = boost::thread(
+          [this] {
+            doReadTransfer();
+            transferFutureData._versionNumber = VersionNumber();
+            readAsyncPromise.set_value(&transferFutureData);
+          }
+        );
         
         // form TransferFuture, store it for later re-used and return it
         activeFuture = TransferFuture(boostFuture, static_cast<TransferElement*>(this));
@@ -130,7 +138,10 @@ namespace mtca4u {
       boost::thread readAsyncThread;
       
       /// Promise used in readAsync()
-      boost::promise<void> readAsyncPromise;
+      TransferFuture::PromiseType readAsyncPromise;
+      
+      /// Data transferred in the TransferFuture, used by the default implementation of readAsync()
+      TransferFuture::Data transferFutureData{{}};
 
   };
 

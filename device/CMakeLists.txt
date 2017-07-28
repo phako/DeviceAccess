@@ -9,6 +9,7 @@ set(SOURCE
    ${CMAKE_CURRENT_SOURCE_DIR}/src/TransferGroup.cc
    ${CMAKE_CURRENT_SOURCE_DIR}/src/RegisterCatalogue.cc
    ${CMAKE_CURRENT_SOURCE_DIR}/src/ExperimentalFeatures.cc
+   ${CMAKE_CURRENT_SOURCE_DIR}/src/VersionNumber.cc
    PARENT_SCOPE
 )
 
@@ -26,6 +27,7 @@ set(HEADERS
    ${CMAKE_CURRENT_SOURCE_DIR}/include/TransferElement.h
    ${CMAKE_CURRENT_SOURCE_DIR}/include/RegisterCatalogue.h
    ${CMAKE_CURRENT_SOURCE_DIR}/include/AccessMode.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/include/VersionNumber.h
    PARENT_SCOPE
 )
 

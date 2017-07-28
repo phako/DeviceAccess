@@ -24,6 +24,7 @@
 #include "DeviceException.h"
 #include "TimeStamp.h"
 #include "TransferFuture.h"
+#include "VersionNumber.h"
 
 namespace ChimeraTK {
   class PersistentDataStorage;
@@ -153,9 +154,22 @@ namespace mtca4u {
        *  another readAny() or readAsync() may be called. */
       static boost::shared_ptr<TransferElement> readAny(std::list<std::reference_wrapper<TransferElement>> elementsToRead);
 
+      /**
+      * Returns the version number that is associated with the last transfer (i.e. last read or write). See
+      * ChimeraTK::VersionNumber for details.
+      * 
+      * The returned version number may be invalid (i.e. ChimeraTK::VersionNumber::isValid() returns false), if
+      * AccessMode::wait_for_new_data as not been specified. If AccessMode::wait_for_new_data was specified, a valid
+      * version number must be returned (either obtained from the ChimeraTK::VersionNumberSource or derived from an
+      * existing version number e.g. of another variable).
+      */
+      virtual ChimeraTK::VersionNumber getVersionNumber() const {
+        return ChimeraTK::VersionNumber();
+      }
+
       /** Write the data to device. The return value is true, old data was lost on the write transfer (e.g. due to an
        *  buffer overflow). In case of an unbuffered write transfer, the return value will always be false. */
-      virtual bool write() = 0;
+      virtual bool write(ChimeraTK::VersionNumber versionNumber={}) = 0;
 
       /** Read the data from the device but do not fill it into the user buffer of this TransferElement. Calling this
        *  function followed by postRead() is exactly equivalent to a call to just read().
@@ -295,8 +309,8 @@ namespace mtca4u {
        *  not yet obtained by the user e.g. through TransferFuture::wait(). */
       bool hasActiveFuture{false};
       
-      /** The currentlyu "active" future, if hasActiveFuture ==  true */
-      TransferFuture activeFuture{this};
+      /** The currently "active" future, if hasActiveFuture == true */
+      TransferFuture activeFuture;
       
       friend class TransferGroup;
       friend class TransferFuture;
@@ -305,10 +319,10 @@ namespace mtca4u {
   /*******************************************************************************************************************/  
 
   // Note: the %iterator in the third line prevents doxygen from creating a link which it cannot resolve.
-  // It reads: std::list<boost::shared_future<void>>::iterator
+  // It reads: std::list<TransferFuture::PlainFutureType>::iterator
   /** Internal class needed for TransferElement::readAny(): Provide a wrapper around the list iterator to effectivly
    *  allow passing std::list<TransferFuture>::iterator to boost::wait_for_any() which otherwise expects e.g.
-   *  std::list<boost::shared_future<void>>::%iterator. This class provides the same interface as an interator of
+   *  std::list<TransferFuture::PlainFutureType>::%iterator. This class provides the same interface as an interator of
    *  the expected type but adds the function getTransferFuture(), so we can obtain the TransferElement from the 
    *  return value of boost::wait_for_any(). */
   class TransferFutureIterator {
@@ -318,8 +332,8 @@ namespace mtca4u {
       TransferFutureIterator operator++(int) { ++_it; return *this; }
       bool operator!=(const TransferFutureIterator &rhs) {return _it != rhs._it;}
       bool operator==(const TransferFutureIterator &rhs) {return _it == rhs._it;}
-      boost::shared_future<void>& operator*() {return (*_it)->getBoostFuture();}
-      boost::shared_future<void>& operator->() {return (*_it)->getBoostFuture();}
+      TransferFuture::PlainFutureType& operator*() {return (*_it)->getBoostFuture();}
+      TransferFuture::PlainFutureType& operator->() {return (*_it)->getBoostFuture();}
       TransferFuture& getTransferFuture() const {return **_it;}
     private:
       std::list<TransferFuture*>::iterator _it;
@@ -329,11 +343,11 @@ namespace mtca4u {
 namespace std {
   template<>
   struct iterator_traits<mtca4u::TransferFutureIterator> {
-      typedef boost::shared_future<void> value_type;
+      typedef ChimeraTK::TransferFuture::PlainFutureType value_type;
       typedef size_t difference_type;
       typedef std::forward_iterator_tag iterator_category;
   };
-}
+} /* namespace std */
 namespace mtca4u {
 
   /*******************************************************************************************************************/  
