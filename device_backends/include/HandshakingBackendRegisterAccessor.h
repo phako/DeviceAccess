@@ -62,7 +62,7 @@ namespace ChimeraTK{
       _payloadRegisterAccessor->preWrite();
     }
 
-    bool write() override {
+    bool write(ChimeraTK::VersionNumber /*versionNumber*/) override {
       // FIXME: does it make sense to call preWrite and postRead here?
       // does it make sense to have them at all?
       preWrite();
