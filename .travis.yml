@@ -58,7 +58,7 @@ before_install:
      - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; fi
 
 install:
-     - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get install libboost1.67-dev cmake lcov libxml++2.6-dev ${PKG} ; fi
+     - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get install libboost1.67-dev cmake lcov linux-headers-generic libxml++2.6-dev ${PKG} ; fi
      - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libxml++ ; fi
     
 script:
@@ -68,7 +68,7 @@ script:
      - mkdir -p dummy-driver
      - cd dummy-driver
      - git clone https://github.com/ChimeraTK/pciedummy-driver .
-     - sudo make make
+     - sudo make
      - sudo make install
      - sudo modprobe mtcadummy
      - cd ..
