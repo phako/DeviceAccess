@@ -57,7 +57,8 @@ before_install:
      - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get update ; fi
 
 install:
-     - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get install libboost1.67-dev cmake lcov ${PKG} ; fi
+     - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then sudo apt-get install libboost1.67-dev cmake lcov libxml++2.6-dev ${PKG} ; fi
+     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install libxml++ ; fi
     
 script:
     ############################################################################
